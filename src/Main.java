@@ -1,16 +1,20 @@
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.DoubleStream;
 import java.util.stream.LongStream;
+
+
 
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        long[] arr = LongStream.iterate(1, i -> ++i).limit(50_000_000).toArray();
+        double[] arr = DoubleStream.iterate(1, i -> ++i).limit(1_000_000).toArray();
 
 
-        int multiplier = 4;
+        int multiplier = 2;
         int threadCount = 4;
         int chunkSize = arr.length / threadCount;
+//        int[] chunkSize = {1, 1000, 999, 9_998_000};
 
         long startTime = System.currentTimeMillis();
         Thread[] threads = new Thread[threadCount];
@@ -20,13 +24,26 @@ public class Main {
             final int end =
                     i == threadCount - 1 ?
                             arr.length : (i + 1) * chunkSize;
-
             threads[i] = new Thread(() -> {
                 for (int j = start; j < end; j++) {
                     arr[j] *= multiplier;
                 }
             });
         }
+
+
+//        for (int i = 0; i < threadCount; i++) {
+//            final int start = i == 0 ? 0 : sum(chunkSize, i - 1);
+//            final int end = start + chunkSize[i];
+
+
+
+//            threads[i] = new Thread(() -> {
+//                for (int j = start; j < end; j++) {
+//                    arr[j] = Math.pow(j, multiplier);
+//                }
+//            });
+//        }
 
         for (var thread : threads) {
             thread.start();
@@ -36,6 +53,7 @@ public class Main {
             thread.join();
         }
 
+
 //        for (int i = 0; i < arr.length; i++) {
 //            arr[i] *= multiplier;
 //        }
@@ -43,6 +61,10 @@ public class Main {
         long end = System.currentTimeMillis();
 
         System.out.println(end - startTime);
+//               System.out.println(Arrays.toString(arr));
+
+
+
         System.out.println("Лабораторная 0");
         task1();
         task2();
@@ -51,7 +73,13 @@ public class Main {
         task5();
 
     }
-
+    public static int sum(int[] array, int endIndex) {
+        int sum = 0;
+        for (int i = 0; i <= endIndex; i++) {
+            sum += array[i];
+        }
+        return sum;
+    }
     public static void task1() {
         System.out.println("Задание 1");
 // 66. Plus One
@@ -137,7 +165,7 @@ public class Main {
                 System.out.println(Arrays.toString(new int[]{val + 1, val2 + 1}));
             else if (sum < target)
                 val++;
-                val2--;
+            val2--;
         }
     }
 }
